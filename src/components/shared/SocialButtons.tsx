@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Pressable, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
-import {Text, Icon, Row} from '../primitives';
+import {View, StyleSheet} from 'react-native';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_SUBTLE} from '../../theme';
+import {Text, Icon, Row, BasePressable} from '../primitives';
 
 interface SocialButtonsProps {
   onGooglePress?: () => void;
@@ -14,29 +14,25 @@ export const SocialButtons: React.FC<SocialButtonsProps> = ({
 }) => {
   return (
     <Row gap={spacing.md} style={styles.row}>
-      <Pressable
+      <BasePressable
         onPress={onGooglePress}
-        style={({pressed}) => [
-          styles.button,
-          {opacity: pressed ? 0.7 : 1},
-        ]}>
+        pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+        style={styles.button}>
         <Icon name="mail" size={20} color={colors.onSurface} />
         <Text variant="labelLg" style={styles.label}>
           Google
         </Text>
-      </Pressable>
+      </BasePressable>
 
-      <Pressable
+      <BasePressable
         onPress={onApplePress}
-        style={({pressed}) => [
-          styles.button,
-          {opacity: pressed ? 0.7 : 1},
-        ]}>
+        pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+        style={styles.button}>
         <Icon name="apple" size={20} color={colors.onSurface} />
         <Text variant="labelLg" style={styles.label}>
           Apple
         </Text>
-      </Pressable>
+      </BasePressable>
     </Row>
   );
 };

@@ -3,13 +3,12 @@ import {
   View,
   ScrollView,
   FlatList,
-  Pressable,
   StyleSheet,
   Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors, spacing, borderRadius, shadows} from '../theme';
+import {colors, spacing, borderRadius, shadows, OPACITY_ON_PRESS_ICON} from '../theme';
 import {
   Screen,
   Text,
@@ -18,6 +17,7 @@ import {
   Spacer,
   Avatar,
   Row,
+  BasePressable,
 } from '../components/primitives';
 import {
   Header,
@@ -89,11 +89,12 @@ export const ClaimItemsScreen: React.FC = () => {
       {/* Custom Header */}
       <View style={styles.header}>
         <Row align="center" gap={spacing.sm}>
-          <Pressable
+          <BasePressable
             onPress={() => navigation.goBack()}
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
             style={styles.backBtn}>
             <Icon name="arrow-back" size={24} color={colors.primary} />
-          </Pressable>
+          </BasePressable>
           <View style={styles.headerTitleSection}>
             <Text variant="titleMd" numberOfLines={1}>
               {bill.restaurantName}
@@ -173,19 +174,21 @@ export const ClaimItemsScreen: React.FC = () => {
               Qty:
             </Text>
             <Row align="center" gap={spacing.md}>
-              <Pressable
+              <BasePressable
                 onPress={() => setQuantity(Math.max(1, quantity - 1))}
+                pressedOpacity={OPACITY_ON_PRESS_ICON}
                 style={styles.stepperBtn}>
                 <Icon name="remove" size={18} color={colors.onSurface} />
-              </Pressable>
+              </BasePressable>
               <Text variant="titleMd" style={styles.quantityText}>
                 {quantity}
               </Text>
-              <Pressable
+              <BasePressable
                 onPress={() => setQuantity(quantity + 1)}
+                pressedOpacity={OPACITY_ON_PRESS_ICON}
                 style={styles.stepperBtn}>
                 <Icon name="add" size={18} color={colors.onSurface} />
-              </Pressable>
+              </BasePressable>
             </Row>
           </Row>
 
@@ -198,7 +201,7 @@ export const ClaimItemsScreen: React.FC = () => {
           <Spacer size="sm" />
           <Row gap={spacing.sm}>
             {mockParticipants.map(p => (
-              <Pressable
+              <BasePressable
                 key={p.id}
                 style={[
                   styles.splitParticipantBtn,
@@ -211,7 +214,7 @@ export const ClaimItemsScreen: React.FC = () => {
                   colorKey={p.colorKey}
                 />
                 <Text variant="caption">{p.name}</Text>
-              </Pressable>
+              </BasePressable>
             ))}
           </Row>
 
@@ -255,9 +258,8 @@ export const ClaimItemsScreen: React.FC = () => {
           Your total
         </Text>
         <Spacer size="md" />
-        <Pressable
-          onPress={() => (navigation as any).navigate('PerPersonTotals')}
-          style={({pressed}) => [{opacity: pressed ? 0.9 : 1}]}>
+        <BasePressable
+          onPress={() => (navigation as any).navigate('PerPersonTotals')}>
           <LinearGradient
             colors={[colors.primary, colors.primaryDim]}
             start={{x: 0, y: 0}}
@@ -270,7 +272,7 @@ export const ClaimItemsScreen: React.FC = () => {
               Continue
             </Text>
           </LinearGradient>
-        </Pressable>
+        </BasePressable>
       </View>
     </Screen>
   );

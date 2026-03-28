@@ -1,9 +1,15 @@
 import React from 'react';
-import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors, spacing, borderRadius, shadows} from '../theme';
-import {Screen, Text, Icon, Spacer, Row} from '../components/primitives';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+  OPACITY_ON_PRESS_SUBTLE,
+} from '../theme';
+import {Screen, Text, Icon, Spacer, Row, BasePressable} from '../components/primitives';
 import {Header} from '../components/shared';
 import {useAppDispatch} from '../app/store';
 import {setSourceType} from '../features/scan/scanSlice';
@@ -85,9 +91,7 @@ export const GalleryImportScreen: React.FC = () => {
         <Spacer size="3xl" />
 
         {/* Confirm Button */}
-        <Pressable
-          onPress={handleConfirm}
-          style={({pressed}) => [{opacity: pressed ? 0.9 : 1}]}>
+        <BasePressable onPress={handleConfirm}>
           <LinearGradient
             colors={[colors.primary, colors.primaryDim]}
             start={{x: 0, y: 0}}
@@ -97,21 +101,19 @@ export const GalleryImportScreen: React.FC = () => {
               Confirm Selection
             </Text>
           </LinearGradient>
-        </Pressable>
+        </BasePressable>
 
         <Spacer size="md" />
 
         {/* Cancel Button */}
-        <Pressable
+        <BasePressable
           onPress={() => navigation.goBack()}
-          style={({pressed}) => [
-            styles.cancelButton,
-            {opacity: pressed ? 0.7 : 1},
-          ]}>
+          pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+          style={styles.cancelButton}>
           <Text variant="labelLg" color={colors.onSurface} style={styles.btnLabel}>
             Cancel
           </Text>
-        </Pressable>
+        </BasePressable>
 
         <Spacer size="3xl" />
       </ScrollView>

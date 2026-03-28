@@ -1,7 +1,13 @@
 import React from 'react';
-import {View, Pressable, StyleSheet, Platform} from 'react-native';
-import {colors, spacing, borderRadius, shadows} from '../../theme';
-import {Text, Icon} from '../primitives';
+import {View, StyleSheet, Platform} from 'react-native';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+  OPACITY_ON_PRESS_SUBTLE,
+} from '../../theme';
+import {Text, Icon, BasePressable} from '../primitives';
 import type {TabName} from '../../types';
 
 interface BottomNavBarProps {
@@ -31,13 +37,11 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
       {tabs.map(tab => {
         const isActive = activeTab === tab.key;
         return (
-          <Pressable
+          <BasePressable
             key={tab.key}
             onPress={() => onTabPress(tab.key)}
-            style={({pressed}) => [
-              styles.tab,
-              {opacity: pressed ? 0.7 : 1},
-            ]}>
+            pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+            style={styles.tab}>
             <View
               style={[
                 styles.iconWrapper,
@@ -56,7 +60,7 @@ export const BottomNavBar: React.FC<BottomNavBarProps> = ({
               style={[styles.label, !isActive && styles.inactiveLabel]}>
               {tab.label}
             </Text>
-          </Pressable>
+          </BasePressable>
         );
       })}
     </View>

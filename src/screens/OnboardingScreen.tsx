@@ -4,13 +4,12 @@ import {
   StyleSheet,
   FlatList,
   Dimensions,
-  Pressable,
   NativeSyntheticEvent,
   NativeScrollEvent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, spacing, borderRadius} from '../theme';
-import {Screen, Text, Button, Spacer} from '../components/primitives';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_ICON} from '../theme';
+import {Screen, Text, Button, Spacer, BasePressable} from '../components/primitives';
 import {OnboardingPage} from '../components/shared';
 import {useAppDispatch, useAppSelector} from '../app/store';
 import {login} from '../features/auth/authSlice';
@@ -70,13 +69,11 @@ export const OnboardingScreen: React.FC = () => {
         <Text variant="titleLg" color={colors.primary} style={styles.brandText}>
           SplitEasy
         </Text>
-        <Pressable
-          onPress={handleSkip}
-          style={({pressed}) => [{opacity: pressed ? 0.6 : 1}]}>
+        <BasePressable onPress={handleSkip} pressedOpacity={OPACITY_ON_PRESS_ICON}>
           <Text variant="labelLg" color={colors.onSurfaceVariant}>
             Skip
           </Text>
-        </Pressable>
+        </BasePressable>
       </View>
 
       {/* Carousel */}
@@ -117,16 +114,14 @@ export const OnboardingScreen: React.FC = () => {
           fullWidth
         />
         <Spacer size="lg" />
-        <Pressable
+        <BasePressable
           onPress={handleContinueAsGuest}
-          style={({pressed}) => [
-            styles.guestButton,
-            {opacity: pressed ? 0.6 : 1},
-          ]}>
+          pressedOpacity={OPACITY_ON_PRESS_ICON}
+          style={styles.guestButton}>
           <Text variant="labelLg" color={colors.onSurfaceVariant}>
             Continue as Guest
           </Text>
-        </Pressable>
+        </BasePressable>
       </View>
     </Screen>
   );

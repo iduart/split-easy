@@ -1,7 +1,13 @@
 import React from 'react';
-import {View, Pressable, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
-import {Text, Icon, Row, Avatar, Badge} from '../primitives';
+import {View, StyleSheet} from 'react-native';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  OPACITY_ON_PRESS_SURFACE,
+  OPACITY_ON_PRESS_SUBTLE,
+} from '../../theme';
+import {Text, Icon, Row, Avatar, Badge, BasePressable} from '../primitives';
 import type {BillItem, Participant} from '../../types';
 
 interface BillItemRowProps {
@@ -52,13 +58,10 @@ export const BillItemRow: React.FC<BillItemRowProps> = ({
   const isUnclaimed = item.claimedBy.length === 0;
 
   return (
-    <Pressable
+    <BasePressable
       onPress={isUnclaimed ? onClaim : onAssign}
-      style={({pressed}) => [
-        styles.container,
-        isSelected && styles.selectedContainer,
-        {opacity: pressed ? 0.85 : 1},
-      ]}>
+      pressedOpacity={OPACITY_ON_PRESS_SURFACE}
+      style={[styles.container, isSelected && styles.selectedContainer]}>
       <Row align="center" gap={spacing.md} style={styles.content}>
         {item.quantity > 1 && (
           <View style={styles.quantityBadge}>
@@ -99,22 +102,22 @@ export const BillItemRow: React.FC<BillItemRowProps> = ({
           ${item.totalPrice.toFixed(2)}
         </Text>
 
-        <Pressable
+        <BasePressable
           onPress={isUnclaimed ? onClaim : onAssign}
           hitSlop={4}
-          style={({pressed}) => [
+          pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+          style={[
             styles.actionButton,
             isUnclaimed && styles.actionButtonPrimary,
-            {opacity: pressed ? 0.7 : 1},
           ]}>
           <Icon
             name={claimStatus.actionIcon}
             size={16}
             color={isUnclaimed ? colors.primary : colors.onSurfaceVariant}
           />
-        </Pressable>
+        </BasePressable>
       </Row>
-    </Pressable>
+    </BasePressable>
   );
 };
 

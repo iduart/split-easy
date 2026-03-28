@@ -1,7 +1,7 @@
 import React from 'react';
-import {ScrollView, Pressable, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
-import {Text} from '../primitives';
+import {ScrollView, StyleSheet} from 'react-native';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_SUBTLE} from '../../theme';
+import {Text, BasePressable} from '../primitives';
 
 interface FilterChipsProps {
   filters: string[];
@@ -22,13 +22,13 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
       {filters.map(filter => {
         const isActive = filter === activeFilter;
         return (
-          <Pressable
+          <BasePressable
             key={filter}
             onPress={() => onFilterPress(filter)}
-            style={({pressed}) => [
+            pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+            style={[
               styles.chip,
               isActive ? styles.activeChip : styles.inactiveChip,
-              {opacity: pressed ? 0.7 : 1},
             ]}>
             <Text
               variant="labelMd"
@@ -36,7 +36,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
               style={styles.chipText}>
               {filter}
             </Text>
-          </Pressable>
+          </BasePressable>
         );
       })}
     </ScrollView>

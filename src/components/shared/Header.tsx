@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Pressable, StyleSheet} from 'react-native';
-import {colors, spacing, typography} from '../../theme';
-import {Text, Icon, Row} from '../primitives';
+import {View, StyleSheet} from 'react-native';
+import {colors, spacing, OPACITY_ON_PRESS_ICON} from '../../theme';
+import {Text, Icon, Row, BasePressable} from '../primitives';
 
 interface HeaderProps {
   title?: string;
@@ -27,15 +27,13 @@ export const Header: React.FC<HeaderProps> = ({
       <Row align="center" justify="space-between" style={styles.row}>
         <Row align="center" gap={spacing.sm} style={styles.leftSection}>
           {showBack && (
-            <Pressable
+            <BasePressable
               onPress={onBack}
               hitSlop={8}
-              style={({pressed}) => [
-                styles.backButton,
-                {opacity: pressed ? 0.6 : 1},
-              ]}>
+              pressedOpacity={OPACITY_ON_PRESS_ICON}
+              style={styles.backButton}>
               <Icon name="arrow-back" size={24} color={colors.primary} />
-            </Pressable>
+            </BasePressable>
           )}
           <View style={styles.titleContainer}>
             {showBrand ? (
@@ -62,12 +60,12 @@ export const Header: React.FC<HeaderProps> = ({
         </Row>
 
         {rightIcon && onRightPress ? (
-          <Pressable
+          <BasePressable
             onPress={onRightPress}
             hitSlop={8}
-            style={({pressed}) => [{opacity: pressed ? 0.6 : 1}]}>
+            pressedOpacity={OPACITY_ON_PRESS_ICON}>
             <Icon name={rightIcon} size={24} color={colors.onSurface} />
-          </Pressable>
+          </BasePressable>
         ) : (
           <View style={styles.placeholder} />
         )}

@@ -2,13 +2,20 @@ import React, {useEffect, useState, useCallback} from 'react';
 import {
   View,
   ScrollView,
-  Pressable,
   StyleSheet,
   useWindowDimensions,
   type LayoutChangeEvent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, spacing, borderRadius, shadows} from '../theme';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+  OPACITY_ON_PRESS_ICON,
+  OPACITY_ON_PRESS_SURFACE,
+  OPACITY_ON_PRESS_PROMO,
+} from '../theme';
 import {
   Screen,
   Text,
@@ -17,6 +24,7 @@ import {
   Avatar,
   Row,
   ProgressBar,
+  BasePressable,
 } from '../components/primitives';
 import {
   GradientFill,
@@ -61,12 +69,18 @@ export const HomeDashboardScreen: React.FC = () => {
           </Text>
         </Row>
         <Row align="center" gap={spacing.xs}>
-          <Pressable style={styles.headerIconBtn} onPress={() => {}}>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.headerIconBtn}
+            onPress={() => {}}>
             <Icon name="notifications" size={24} color={colors.onSurface} />
-          </Pressable>
-          <Pressable style={styles.headerIconBtn} onPress={() => {}}>
+          </BasePressable>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.headerIconBtn}
+            onPress={() => {}}>
             <Icon name="more-vert" size={24} color={colors.onSurface} />
-          </Pressable>
+          </BasePressable>
         </Row>
       </View>
 
@@ -86,11 +100,8 @@ export const HomeDashboardScreen: React.FC = () => {
         <Spacer size="2xl" />
 
         {/* Scan New Bill */}
-        <Pressable
-          style={({pressed}) => [
-            styles.scanCardPressable,
-            {width: scanCardLayoutWidth, opacity: pressed ? 0.9 : 1},
-          ]}
+        <BasePressable
+          style={[styles.scanCardPressable, {width: scanCardLayoutWidth}]}
           onPress={() => (navigation as any).navigate('ScanFlow')}>
           <View style={styles.scanCardShadowShell}>
             <GradientFill
@@ -130,16 +141,14 @@ export const HomeDashboardScreen: React.FC = () => {
               </View>
             </GradientFill>
           </View>
-        </Pressable>
+        </BasePressable>
 
         <Spacer size="lg" />
 
         {/* Join a Bill */}
-        <Pressable
-          style={({pressed}) => [
-            styles.joinCard,
-            {opacity: pressed ? 0.85 : 1},
-          ]}
+        <BasePressable
+          pressedOpacity={OPACITY_ON_PRESS_SURFACE}
+          style={styles.joinCard}
           onPress={() => {}}>
           <Icon name="group-add" size={32} color={colors.primary} />
           <Spacer size="3xl" />
@@ -150,7 +159,7 @@ export const HomeDashboardScreen: React.FC = () => {
           <Text variant="bodySm" color={colors.onSurfaceVariant}>
             Enter a room code
           </Text>
-        </Pressable>
+        </BasePressable>
 
         <Spacer size="2xl" />
 
@@ -203,11 +212,9 @@ export const HomeDashboardScreen: React.FC = () => {
                   Unlock split insights & zero ads
                 </Text>
               </View>
-              <Pressable
-                style={({pressed}) => [
-                  styles.upgradeBtn,
-                  {opacity: pressed ? 0.8 : 1},
-                ]}
+              <BasePressable
+                pressedOpacity={OPACITY_ON_PRESS_PROMO}
+                style={styles.upgradeBtn}
                 onPress={() => {}}>
                 <Text
                   variant="labelSm"
@@ -215,7 +222,7 @@ export const HomeDashboardScreen: React.FC = () => {
                   style={{fontWeight: '700'}}>
                   Upgrade
                 </Text>
-              </Pressable>
+              </BasePressable>
             </Row>
           </View>
         </View>

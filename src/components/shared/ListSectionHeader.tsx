@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pressable, StyleSheet} from 'react-native';
-import {colors} from '../../theme';
-import {Text, Row} from '../primitives';
+import {StyleSheet} from 'react-native';
+import {colors, OPACITY_ON_PRESS_ICON} from '../../theme';
+import {Text, Row, BasePressable} from '../primitives';
 
 export interface ListSectionHeaderProps {
   title: string;
@@ -21,11 +21,11 @@ export const ListSectionHeader: React.FC<ListSectionHeaderProps> = ({
         {title}
       </Text>
       {actionLabel != null && onActionPress != null ? (
-        <Pressable onPress={onActionPress}>
+        <BasePressable onPress={onActionPress} pressedOpacity={OPACITY_ON_PRESS_ICON}>
           <Text variant="labelLg" color={colors.primary} style={styles.action}>
             {actionLabel}
           </Text>
-        </Pressable>
+        </BasePressable>
       ) : null}
     </Row>
   );

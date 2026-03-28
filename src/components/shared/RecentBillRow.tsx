@@ -1,7 +1,7 @@
 import React from 'react';
-import {View, Pressable, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
-import {Text, Icon, Row, Spacer} from '../primitives';
+import {View, StyleSheet} from 'react-native';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_SURFACE} from '../../theme';
+import {Text, Icon, Row, Spacer, BasePressable} from '../primitives';
 import type {BillSummary} from '../../types';
 
 export interface RecentBillRowProps {
@@ -61,14 +61,12 @@ export const RecentBillRow: React.FC<RecentBillRowProps> = ({
 
   if (onPress) {
     return (
-      <Pressable
-        style={({pressed}) => [
-          styles.container,
-          {opacity: pressed ? 0.85 : 1},
-        ]}
+      <BasePressable
+        pressedOpacity={OPACITY_ON_PRESS_SURFACE}
+        style={styles.container}
         onPress={onPress}>
         {row}
-      </Pressable>
+      </BasePressable>
     );
   }
 

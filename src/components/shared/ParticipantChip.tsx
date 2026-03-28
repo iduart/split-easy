@@ -1,7 +1,7 @@
 import React from 'react';
-import {Pressable, View, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
-import {Text, Avatar, Icon, Row} from '../primitives';
+import {View, StyleSheet} from 'react-native';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_SUBTLE} from '../../theme';
+import {Text, Avatar, Icon, Row, BasePressable} from '../primitives';
 import type {Participant} from '../../types';
 
 interface ParticipantChipProps {
@@ -19,20 +19,17 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
 }) => {
   if (isAddButton) {
     return (
-      <Pressable
+      <BasePressable
         onPress={onPress}
-        style={({pressed}) => [
-          styles.chip,
-          styles.addChip,
-          {opacity: pressed ? 0.7 : 1},
-        ]}>
+        pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+        style={[styles.chip, styles.addChip]}>
         <Row align="center" gap={spacing.sm}>
           <Icon name="add" size={18} color={colors.onSurfaceVariant} />
           <Text variant="labelLg" color={colors.onSurfaceVariant}>
             Add
           </Text>
         </Row>
-      </Pressable>
+      </BasePressable>
     );
   }
 
@@ -41,12 +38,12 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
   }
 
   return (
-    <Pressable
+    <BasePressable
       onPress={onPress}
-      style={({pressed}) => [
+      pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+      style={[
         styles.chip,
         isActive ? styles.activeChip : styles.inactiveChip,
-        {opacity: pressed ? 0.7 : 1},
       ]}>
       <Row align="center" gap={spacing.sm}>
         <Avatar
@@ -60,7 +57,7 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
           {participant.name}
         </Text>
       </Row>
-    </Pressable>
+    </BasePressable>
   );
 };
 

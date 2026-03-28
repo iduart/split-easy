@@ -1,14 +1,21 @@
 import React from 'react';
-import {View, ScrollView, Pressable, StyleSheet, Platform} from 'react-native';
+import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors, spacing, borderRadius, shadows} from '../theme';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+  OPACITY_ON_PRESS_ICON,
+} from '../theme';
 import {
   Screen,
   Text,
   Icon,
   Spacer,
   Row,
+  BasePressable,
 } from '../components/primitives';
 import {Header, ParticipantCard, GlassFooter} from '../components/shared';
 import {mockActiveBillCOP, mockParticipants} from '../data/mock';
@@ -49,11 +56,12 @@ export const PerPersonTotalsScreen: React.FC = () => {
       {/* Header */}
       <View style={styles.header}>
         <Row align="center" gap={spacing.sm}>
-          <Pressable
+          <BasePressable
             onPress={() => navigation.goBack()}
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
             style={styles.backBtn}>
             <Icon name="arrow-back" size={24} color={colors.primary} />
-          </Pressable>
+          </BasePressable>
           <Text variant="titleMd">Individual Totals</Text>
         </Row>
         <Text variant="titleLg" color={colors.primary} style={styles.brandText}>
@@ -127,9 +135,7 @@ export const PerPersonTotalsScreen: React.FC = () => {
 
       {/* Glass Footer */}
       <View style={styles.glassFooter}>
-        <Pressable
-          onPress={handleConfirm}
-          style={({pressed}) => [{opacity: pressed ? 0.9 : 1}]}>
+        <BasePressable onPress={handleConfirm}>
           <LinearGradient
             colors={[colors.primary, colors.primaryDim]}
             start={{x: 0, y: 0}}
@@ -145,7 +151,7 @@ export const PerPersonTotalsScreen: React.FC = () => {
               </Text>
             </Row>
           </LinearGradient>
-        </Pressable>
+        </BasePressable>
         <Text
           variant="bodySm"
           color={colors.onSurfaceVariant}

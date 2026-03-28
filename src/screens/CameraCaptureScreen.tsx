@@ -1,15 +1,9 @@
 import React, {useEffect, useRef} from 'react';
-import {
-  View,
-  Pressable,
-  StyleSheet,
-  Animated,
-  Dimensions,
-} from 'react-native';
+import {View, StyleSheet, Animated, Dimensions} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors, spacing, borderRadius} from '../theme';
-import {Screen, Text, Icon, Row} from '../components/primitives';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_ICON} from '../theme';
+import {Text, Icon, Row, BasePressable} from '../components/primitives';
 import {useAppDispatch} from '../app/store';
 import {setSourceType} from '../features/scan/scanSlice';
 
@@ -80,11 +74,12 @@ export const CameraCaptureScreen: React.FC = () => {
 
       {/* Top controls */}
       <View style={styles.topControls}>
-        <Pressable
+        <BasePressable
           onPress={() => navigation.goBack()}
+          pressedOpacity={OPACITY_ON_PRESS_ICON}
           style={styles.topControlBtn}>
           <Icon name="close" size={24} color={colors.white} />
-        </Pressable>
+        </BasePressable>
 
         {/* Receipt Detected pill */}
         <View style={styles.detectedPill}>
@@ -97,12 +92,18 @@ export const CameraCaptureScreen: React.FC = () => {
         </View>
 
         <Row gap={spacing.sm}>
-          <Pressable style={styles.topControlBtn} onPress={() => {}}>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.topControlBtn}
+            onPress={() => {}}>
             <Icon name="flash-on" size={22} color={colors.white} />
-          </Pressable>
-          <Pressable style={styles.topControlBtn} onPress={() => {}}>
+          </BasePressable>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.topControlBtn}
+            onPress={() => {}}>
             <Icon name="settings" size={22} color={colors.white} />
-          </Pressable>
+          </BasePressable>
         </Row>
       </View>
 
@@ -124,34 +125,40 @@ export const CameraCaptureScreen: React.FC = () => {
 
         <View style={styles.captureRow}>
           {/* Gallery button */}
-          <Pressable style={styles.sideButton} onPress={() => {}}>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.sideButton}
+            onPress={() => {}}>
             <View style={styles.sideButtonIcon}>
               <Icon name="photo-library" size={22} color={colors.white} />
             </View>
             <Text variant="caption" color={colors.white}>
               Gallery
             </Text>
-          </Pressable>
+          </BasePressable>
 
           {/* Capture button */}
-          <Pressable onPress={handleCapture} style={styles.captureOuter}>
+          <BasePressable onPress={handleCapture} style={styles.captureOuter}>
             <LinearGradient
               colors={[colors.primary, colors.primaryDim]}
               start={{x: 0, y: 0}}
               end={{x: 1, y: 1}}
               style={styles.captureInner}
             />
-          </Pressable>
+          </BasePressable>
 
           {/* History button */}
-          <Pressable style={styles.sideButton} onPress={() => {}}>
+          <BasePressable
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.sideButton}
+            onPress={() => {}}>
             <View style={styles.sideButtonIcon}>
               <Icon name="history" size={22} color={colors.white} />
             </View>
             <Text variant="caption" color={colors.white}>
               History
             </Text>
-          </Pressable>
+          </BasePressable>
         </View>
       </View>
     </View>

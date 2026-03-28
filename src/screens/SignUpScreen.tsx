@@ -1,8 +1,16 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, spacing} from '../theme';
-import {Screen, Text, Button, Input, Spacer, Divider} from '../components/primitives';
+import {colors, spacing, OPACITY_ON_PRESS_ICON} from '../theme';
+import {
+  Screen,
+  Text,
+  Button,
+  Input,
+  Spacer,
+  Divider,
+  BasePressable,
+} from '../components/primitives';
 import {Header, SocialButtons} from '../components/shared';
 import {useAppDispatch} from '../app/store';
 import {login} from '../features/auth/authSlice';
@@ -106,13 +114,13 @@ export const SignUpScreen: React.FC = () => {
           <Text variant="bodyMd" color={colors.onSurfaceVariant}>
             Already have an account?{' '}
           </Text>
-          <Pressable
+          <BasePressable
             onPress={handleGoToSignIn}
-            style={({pressed}) => [{opacity: pressed ? 0.6 : 1}]}>
+            pressedOpacity={OPACITY_ON_PRESS_ICON}>
             <Text variant="labelLg" color={colors.primary}>
               Sign In
             </Text>
-          </Pressable>
+          </BasePressable>
         </View>
 
         <Spacer size="3xl" />

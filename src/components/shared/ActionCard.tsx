@@ -1,8 +1,14 @@
 import React from 'react';
-import {Pressable, View, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {colors, spacing, borderRadius, shadows} from '../../theme';
-import {Text, Icon} from '../primitives';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  shadows,
+  OPACITY_ON_PRESS_SURFACE,
+} from '../../theme';
+import {Text, Icon, BasePressable} from '../primitives';
 
 interface ActionCardProps {
   title: string;
@@ -21,9 +27,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
 }) => {
   if (variant === 'primary') {
     return (
-      <Pressable
-        onPress={onPress}
-        style={({pressed}) => [{opacity: pressed ? 0.9 : 1}]}>
+      <BasePressable onPress={onPress}>
         <LinearGradient
           colors={[colors.primary, colors.primaryDim]}
           start={{x: 0, y: 0}}
@@ -45,17 +49,15 @@ export const ActionCard: React.FC<ActionCardProps> = ({
             </Text>
           </View>
         </LinearGradient>
-      </Pressable>
+      </BasePressable>
     );
   }
 
   return (
-    <Pressable
+    <BasePressable
       onPress={onPress}
-      style={({pressed}) => [
-        styles.defaultContainer,
-        {opacity: pressed ? 0.85 : 1},
-      ]}>
+      pressedOpacity={OPACITY_ON_PRESS_SURFACE}
+      style={styles.defaultContainer}>
       <Icon
         name={icon}
         size={28}
@@ -69,7 +71,7 @@ export const ActionCard: React.FC<ActionCardProps> = ({
         style={styles.defaultSubtitle}>
         {subtitle}
       </Text>
-    </Pressable>
+    </BasePressable>
   );
 };
 

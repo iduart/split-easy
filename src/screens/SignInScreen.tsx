@@ -1,8 +1,16 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, spacing, borderRadius} from '../theme';
-import {Screen, Text, Button, Input, Spacer, Divider} from '../components/primitives';
+import {colors, spacing, borderRadius, OPACITY_ON_PRESS_ICON} from '../theme';
+import {
+  Screen,
+  Text,
+  Button,
+  Input,
+  Spacer,
+  Divider,
+  BasePressable,
+} from '../components/primitives';
 import {Header, SocialButtons} from '../components/shared';
 import {useAppDispatch} from '../app/store';
 import {login} from '../features/auth/authSlice';
@@ -64,13 +72,13 @@ export const SignInScreen: React.FC = () => {
 
         {/* Forgot password link */}
         <View style={styles.forgotRow}>
-          <Pressable
+          <BasePressable
             onPress={handleForgotPassword}
-            style={({pressed}) => [{opacity: pressed ? 0.6 : 1}]}>
+            pressedOpacity={OPACITY_ON_PRESS_ICON}>
             <Text variant="labelMd" color={colors.primary}>
               Forgot Password?
             </Text>
-          </Pressable>
+          </BasePressable>
         </View>
 
         <Spacer size="xs" />
@@ -110,13 +118,13 @@ export const SignInScreen: React.FC = () => {
           <Text variant="bodyMd" color={colors.onSurfaceVariant}>
             Don't have an account?{' '}
           </Text>
-          <Pressable
+          <BasePressable
             onPress={handleGoToSignUp}
-            style={({pressed}) => [{opacity: pressed ? 0.6 : 1}]}>
+            pressedOpacity={OPACITY_ON_PRESS_ICON}>
             <Text variant="labelLg" color={colors.primary}>
               Sign Up
             </Text>
-          </Pressable>
+          </BasePressable>
         </View>
 
         <Spacer size="3xl" />

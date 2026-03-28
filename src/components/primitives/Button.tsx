@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Pressable,
   StyleSheet,
   ActivityIndicator,
   View,
@@ -9,7 +8,16 @@ import {
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {colors, typography, borderRadius, shadows, spacing} from '../../theme';
+import {
+  colors,
+  typography,
+  borderRadius,
+  shadows,
+  spacing,
+  OPACITY_ON_PRESS_SURFACE,
+  OPACITY_ON_PRESS_SUBTLE,
+} from '../../theme';
+import {BasePressable} from './BasePressable';
 import {Text} from './Text';
 
 type ButtonVariant = 'primary' | 'secondary' | 'tertiary';
@@ -70,14 +78,11 @@ export const Button: React.FC<ButtonProps> = ({
 
   if (variant === 'primary') {
     return (
-      <Pressable
+      <BasePressable
         onPress={onPress}
         disabled={isDisabled}
-        style={({pressed}) => [
-          fullWidth && styles.fullWidth,
-          {opacity: pressed ? 0.85 : isDisabled ? 0.5 : 1},
-          style,
-        ]}>
+        pressedOpacity={OPACITY_ON_PRESS_SURFACE}
+        style={[fullWidth && styles.fullWidth, style]}>
         {({pressed}) => (
           <LinearGradient
             colors={[colors.primary, colors.primaryDim]}
@@ -87,24 +92,24 @@ export const Button: React.FC<ButtonProps> = ({
             {renderContent(pressed)}
           </LinearGradient>
         )}
-      </Pressable>
+      </BasePressable>
     );
   }
 
   return (
-    <Pressable
+    <BasePressable
       onPress={onPress}
       disabled={isDisabled}
-      style={({pressed}) => [
+      pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+      style={[
         styles.base,
         variant === 'secondary' && styles.secondary,
         variant === 'tertiary' && styles.tertiary,
         fullWidth && styles.fullWidth,
-        {opacity: pressed ? 0.7 : isDisabled ? 0.5 : 1},
         style,
       ]}>
       {({pressed}) => renderContent(pressed)}
-    </Pressable>
+    </BasePressable>
   );
 };
 

@@ -1,8 +1,22 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, ScrollView, Pressable} from 'react-native';
+import {View, StyleSheet, ScrollView} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {colors, spacing, borderRadius} from '../theme';
-import {Screen, Text, Button, Input, Icon, Spacer} from '../components/primitives';
+import {
+  colors,
+  spacing,
+  borderRadius,
+  OPACITY_ON_PRESS_ICON,
+  OPACITY_ON_PRESS_SUBTLE,
+} from '../theme';
+import {
+  Screen,
+  Text,
+  Button,
+  Input,
+  Icon,
+  Spacer,
+  BasePressable,
+} from '../components/primitives';
 import {Header} from '../components/shared';
 
 export const ForgotPasswordScreen: React.FC = () => {
@@ -76,12 +90,10 @@ export const ForgotPasswordScreen: React.FC = () => {
         <Spacer size="2xl" />
 
         {/* Back to Sign In link */}
-        <Pressable
+        <BasePressable
           onPress={handleBackToSignIn}
-          style={({pressed}) => [
-            styles.backLink,
-            {opacity: pressed ? 0.6 : 1},
-          ]}>
+          pressedOpacity={OPACITY_ON_PRESS_ICON}
+          style={styles.backLink}>
           <Icon name="arrow-back" size={18} color={colors.primary} />
           <Text
             variant="labelLg"
@@ -89,7 +101,7 @@ export const ForgotPasswordScreen: React.FC = () => {
             style={styles.backLinkText}>
             Back to Sign In
           </Text>
-        </Pressable>
+        </BasePressable>
 
         <Spacer size="4xl" />
 
@@ -102,16 +114,14 @@ export const ForgotPasswordScreen: React.FC = () => {
             ready to assist you.
           </Text>
           <Spacer size="lg" />
-          <Pressable
+          <BasePressable
             onPress={() => {}}
-            style={({pressed}) => [
-              styles.supportButton,
-              {opacity: pressed ? 0.7 : 1},
-            ]}>
+            pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
+            style={styles.supportButton}>
             <Text variant="labelMd" color={colors.primary}>
               Contact Support
             </Text>
-          </Pressable>
+          </BasePressable>
         </View>
 
         <Spacer size="3xl" />

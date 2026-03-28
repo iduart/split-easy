@@ -1,10 +1,9 @@
 import React from 'react';
-import {View, ScrollView, Pressable, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import LinearGradient from 'react-native-linear-gradient';
 import {colors, spacing, borderRadius, shadows} from '../theme';
-import {Screen, Text, Icon, Spacer, Row} from '../components/primitives';
-import {Header} from '../components/shared';
+import {Screen, Text, Icon, Spacer, Row, BasePressable} from '../components/primitives';
+import {Header, GradientFill} from '../components/shared';
 
 export const ScanOptionsScreen: React.FC = () => {
   const navigation = useNavigation();
@@ -30,7 +29,7 @@ export const ScanOptionsScreen: React.FC = () => {
             variant="bodyMd"
             color={colors.onSurfaceVariant}
             style={styles.centeredText}>
-            Position the receipt clearly for best results
+            Position the receipt clearly for the best result.
           </Text>
         </View>
 
@@ -68,86 +67,79 @@ export const ScanOptionsScreen: React.FC = () => {
         <View style={styles.hintCard}>
           <Row align="flex-start" gap={spacing.md}>
             <Icon name="lightbulb" size={20} color={colors.primary} />
-            <Text
-              variant="bodySm"
-              color={colors.onSurfaceVariant}
-              style={styles.hintText}>
-              For best results, avoid blurry images and ensure all edges of the
-              receipt are visible within the frame.
+            <Text variant="bodySm" style={styles.hintText}>
+              <Text style={styles.hintLead}>Hint:</Text>
+              {' '}
+              Avoid blurry images and shadows for faster extraction. Good
+              lighting ensures 99% accuracy.
             </Text>
           </Row>
         </View>
 
         <Spacer size="2xl" />
 
-        {/* Take Photo Button */}
-        <Pressable
+        {/* Take Photo Button — content in a normal View; gradient is behind via GradientFill (avoids RN LinearGradient flex clipping) */}
+        <BasePressable
           onPress={() => (navigation as any).navigate('CameraCapture')}
-          style={({pressed}) => [
-            styles.actionRow,
-            {opacity: pressed ? 0.9 : 1},
-          ]}>
-          <LinearGradient
+          style={styles.actionRow}>
+          <GradientFill
             colors={[colors.primary, colors.primaryDim]}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
-            style={styles.actionRowGradient}>
-            <Row align="center" gap={spacing.lg} style={styles.actionRowContent}>
-              <View style={styles.actionIconCircleWhite}>
-                <Icon name="photo-camera" size={24} color={colors.primary} />
+            style={styles.takePhotoGradientShell}>
+            <View style={styles.actionButtonInner}>
+              <View style={styles.actionButtonLeft}>
+                <View style={styles.actionIconCircleGlass}>
+                  <Icon name="photo-camera" size={24} color={colors.white} />
+                </View>
+                <View style={styles.actionTextSection}>
+                  <Text variant="titleLg" color={colors.onPrimary}>
+                    Take Photo
+                  </Text>
+                  <Text
+                    variant="bodySm"
+                    style={styles.takePhotoSubtitle}>
+                    Snap a clear picture now
+                  </Text>
+                </View>
               </View>
-              <View style={styles.actionTextSection}>
-                <Text variant="titleMd" color={colors.onPrimary}>
-                  Take Photo
-                </Text>
-                <Text
-                  variant="bodySm"
-                  color={colors.onPrimary}
-                  style={styles.actionSubtitle}>
-                  Use your camera to capture the receipt
-                </Text>
-              </View>
-              <Icon name="chevron-right" size={24} color={colors.onPrimary} />
-            </Row>
-          </LinearGradient>
-        </Pressable>
+              <Icon
+                name="chevron-right"
+                size={24}
+                color="rgba(255, 255, 255, 0.5)"
+              />
+            </View>
+          </GradientFill>
+        </BasePressable>
 
         <Spacer size="md" />
 
         {/* Upload from Gallery Button */}
-        <Pressable
+        <BasePressable
           onPress={() => (navigation as any).navigate('GalleryImport')}
-          style={({pressed}) => [
-            styles.actionRowDefault,
-            {opacity: pressed ? 0.9 : 1},
-          ]}>
-          <Row align="center" gap={spacing.lg} style={styles.actionRowContent}>
-            <View style={styles.actionIconCircleSecondary}>
-              <Icon name="photo-library" size={24} color={colors.secondary} />
-            </View>
-            <View style={styles.actionTextSection}>
-              <Text variant="titleMd">Upload from Gallery</Text>
-              <Text variant="bodySm" color={colors.onSurfaceVariant}>
-                Select an existing photo from your device
-              </Text>
+          style={styles.actionRowDefault}>
+          <View style={styles.actionButtonInner}>
+            <View style={styles.actionButtonLeft}>
+              <View style={styles.actionIconCircleSecondary}>
+                <Icon name="photo-library" size={24} color={colors.secondary} />
+              </View>
+              <View style={styles.actionTextSection}>
+                <Text variant="titleLg">Upload from Gallery</Text>
+                <Text
+                  variant="bodySm"
+                  color={colors.onSurfaceVariant}
+                  style={styles.gallerySubtitle}>
+                  Choose an existing image
+                </Text>
+              </View>
             </View>
             <Icon
               name="chevron-right"
               size={24}
-              color={colors.onSurfaceVariant}
+              color={colors.outlineVariant}
             />
-          </Row>
-        </Pressable>
-
-        <Spacer size="5xl" />
-
-        {/* Footer Brand */}
-        <View style={styles.footerBrand}>
-          <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            SplitEasy
-          </Text>
-        </View>
-        <Spacer size="2xl" />
+          </View>
+        </BasePressable>
       </ScrollView>
     </Screen>
   );
@@ -236,37 +228,56 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   hintCard: {
-    backgroundColor: 'rgba(74, 64, 224, 0.05)',
+    backgroundColor: 'rgba(20, 0, 126, 0.05)',
     borderRadius: borderRadius.xl,
     padding: spacing.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(74, 64, 224, 0.1)',
   },
   hintText: {
     flex: 1,
+    color: colors.onSurfaceVariant,
+  },
+  hintLead: {
+    fontWeight: '700',
+    color: colors.primary,
   },
   actionRow: {
     borderRadius: borderRadius.xl,
     overflow: 'hidden',
     ...shadows.elevated,
   },
-  actionRowGradient: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
+  takePhotoGradientShell: {
+    borderRadius: borderRadius.xl,
+  },
+  actionButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing['2xl'],
+    paddingVertical: spacing['2xl'],
+    width: '100%',
+  },
+  actionButtonLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.lg,
+    flex: 1,
+    minWidth: 0,
+    marginRight: spacing.md,
   },
   actionRowDefault: {
     backgroundColor: colors.surfaceContainerLowest,
     borderRadius: borderRadius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.lg,
+    borderWidth: 1,
+    borderColor: 'rgba(171, 173, 174, 0.1)',
     ...shadows.card,
   },
-  actionRowContent: {
-    flex: 1,
-  },
-  actionIconCircleWhite: {
+  actionIconCircleGlass: {
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: colors.surfaceContainerLowest,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -280,13 +291,14 @@ const styles = StyleSheet.create({
   },
   actionTextSection: {
     flex: 1,
+    minWidth: 0,
   },
-  actionSubtitle: {
-    opacity: 0.85,
+  takePhotoSubtitle: {
     marginTop: 2,
+    color: 'rgba(255, 255, 255, 0.7)',
   },
-  footerBrand: {
-    alignItems: 'center',
+  gallerySubtitle: {
+    marginTop: 2,
   },
 });
 

@@ -5,10 +5,16 @@ import {
   StyleSheet,
   ViewStyle,
   StyleProp,
-  Pressable,
 } from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {colors, typography, borderRadius, spacing} from '../../theme';
+import {
+  colors,
+  typography,
+  borderRadius,
+  spacing,
+  OPACITY_ON_PRESS_ICON,
+} from '../../theme';
+import {BasePressable} from './BasePressable';
 import {Text} from './Text';
 
 interface InputProps {
@@ -69,13 +75,16 @@ export const Input: React.FC<InputProps> = ({
           autoCapitalize={autoCapitalize}
         />
         {secureTextEntry ? (
-          <Pressable onPress={handleToggleVisibility} style={styles.iconButton}>
+          <BasePressable
+            onPress={handleToggleVisibility}
+            pressedOpacity={OPACITY_ON_PRESS_ICON}
+            style={styles.iconButton}>
             <MaterialIcons
               name={isSecureVisible ? 'visibility' : 'visibility-off'}
               size={20}
               color={colors.onSurfaceVariant}
             />
-          </Pressable>
+          </BasePressable>
         ) : rightIcon ? (
           <MaterialIcons
             name={rightIcon}

@@ -18,6 +18,7 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
     <ScrollView
       horizontal
       showsHorizontalScrollIndicator={false}
+      style={styles.strip}
       contentContainerStyle={styles.scrollContent}>
       {filters.map(filter => {
         const isActive = filter === activeFilter;
@@ -33,7 +34,8 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
             <Text
               variant="labelMd"
               color={isActive ? colors.onSurface : colors.onSurfaceVariant}
-              style={styles.chipText}>
+              style={styles.chipText}
+              numberOfLines={1}>
               {filter}
             </Text>
           </BasePressable>
@@ -44,13 +46,19 @@ export const FilterChips: React.FC<FilterChipsProps> = ({
 };
 
 const styles = StyleSheet.create({
+  strip: {
+    flexGrow: 0,
+  },
   scrollContent: {
+    flexGrow: 0,
+    alignItems: 'center',
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
     gap: spacing.sm,
   },
   chip: {
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.xl,
+    paddingVertical: 6,
     borderRadius: borderRadius.full,
   },
   activeChip: {
@@ -60,6 +68,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceContainerLow,
   },
   chipText: {
+    fontSize: 12,
     fontWeight: '700',
   },
 });

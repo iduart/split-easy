@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {colors, spacing, borderRadius} from '../../theme';
+import {colors, spacing, borderRadius, shadows} from '../../theme';
 import {Text, Avatar, Row, Spacer} from '../primitives';
 import type {Participant, BillItem} from '../../types';
 
@@ -12,12 +12,24 @@ interface ParticipantCardProps {
   tip: number;
   total: number;
   currency: string;
+  /** e.g. 0.1 → labels show "Proportional Tax (10%)" */
+  taxRate?: number;
 }
 
-const formatCurrency = (amount: number, currency: string): string => {
+const formatAmount = (amount: number, currency: string): string => {
+  if (currency === 'COP') {
+    const n = Math.round(amount);
+    return `$${n.toLocaleString('es-CO', {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    })}`;
+  }
   const symbol = currency === 'USD' ? '$' : currency;
   return `${symbol}${amount.toFixed(2)}`;
 };
+
+const displayName = (participant: Participant): string =>
+  participant.name === 'Me' ? 'Me (You)' : participant.name;
 
 export const ParticipantCard: React.FC<ParticipantCardProps> = ({
   participant,
@@ -27,48 +39,62 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
   tip,
   total,
   currency,
+  taxRate = 0.1,
 }) => {
+  const taxPercent = Math.round(taxRate * 100);
+  const taxLabel = `Proportional Tax (${taxPercent}%)`;
+
   return (
     <View style={styles.container}>
-      <Row align="center" justify="space-between">
-        <Row align="center" gap={spacing.md}>
-          <Avatar
-            initial={participant.initial}
-            size={44}
-            colorKey={participant.colorKey}
-          />
-          <View>
-            <Text variant="titleMd">{participant.name}</Text>
-            <Text variant="bodySm" color={colors.onSurfaceVariant}>
-              {items.length} item{items.length !== 1 ? 's' : ''} claimed
-            </Text>
-          </View>
-        </Row>
-        <Text variant="headlineSm" color={colors.primary}>
-          {formatCurrency(total, currency)}
-        </Text>
+      <Row align="flex-start" justify="space-between">
+        <View style={styles.headerMain}>
+          <Row align="center" gap={spacing.md}>
+            <Avatar
+              initial={participant.initial}
+              size={48}
+              colorKey={participant.colorKey}
+            />
+            <View style={styles.nameBlock}>
+              <Text variant="headlineSm" numberOfLines={1}>
+                {displayName(participant)}
+              </Text>
+              <Text variant="bodySm" color={colors.onSurfaceVariant} numberOfLines={1}>
+                {items.length} item{items.length !== 1 ? 's' : ''} claimed
+              </Text>
+            </View>
+          </Row>
+        </View>
+        <View style={styles.balanceCol}>
+          <Text variant="bodySm" color={colors.onSurfaceVariant} style={styles.balanceLabel}>
+            Balance
+          </Text>
+          <Text variant="headlineSm" style={styles.balanceAmount} numberOfLines={1}>
+            {formatAmount(total, currency)}
+          </Text>
+        </View>
       </Row>
 
-      <Spacer size="lg" />
+      <Spacer size="2xl" />
 
       <View style={styles.itemList}>
         {items.map(item => (
           <Row
             key={item.id}
             justify="space-between"
+            align="center"
             style={styles.itemRow}>
             <Text
               variant="bodyMd"
-              color={colors.onSurfaceVariant}
-              numberOfLines={1}
+              color={colors.onSurface}
+              numberOfLines={2}
               style={styles.itemName}>
               {item.name}
               {item.splitType === 'shared' && item.claimedBy.length > 1
                 ? ` (1/${item.claimedBy.length})`
                 : ''}
             </Text>
-            <Text variant="bodyMd">
-              {formatCurrency(
+            <Text variant="bodyMd" style={styles.itemPrice}>
+              {formatAmount(
                 item.splitType === 'shared' && item.claimedBy.length > 1
                   ? item.totalPrice / item.claimedBy.length
                   : item.totalPrice,
@@ -85,23 +111,23 @@ export const ParticipantCard: React.FC<ParticipantCardProps> = ({
             Subtotal
           </Text>
           <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            {formatCurrency(subtotal, currency)}
+            {formatAmount(subtotal, currency)}
           </Text>
         </Row>
         <Row justify="space-between" style={styles.breakdownRow}>
           <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            Tax
+            {taxLabel}
           </Text>
-          <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            {formatCurrency(tax, currency)}
+          <Text variant="bodySm" color={colors.primary} style={styles.breakdownAccent}>
+            + {formatAmount(tax, currency)}
           </Text>
         </Row>
         <Row justify="space-between" style={styles.breakdownRow}>
           <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            Tip
+            Proportional Tip
           </Text>
-          <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            {formatCurrency(tip, currency)}
+          <Text variant="bodySm" color={colors.primary} style={styles.breakdownAccent}>
+            + {formatAmount(tip, currency)}
           </Text>
         </Row>
       </View>
@@ -113,26 +139,60 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.surfaceContainerLowest,
     borderRadius: borderRadius.xl,
-    padding: spacing.lg,
+    padding: spacing['2xl'],
+    ...shadows.card,
+  },
+  headerMain: {
+    flex: 1,
+    minWidth: 0,
+    marginRight: spacing.md,
+  },
+  nameBlock: {
+    flex: 1,
+    minWidth: 0,
+  },
+  balanceCol: {
+    alignItems: 'flex-end',
+    flexShrink: 0,
+    flexGrow: 0,
+  },
+  balanceLabel: {
+    marginBottom: spacing.xs,
+  },
+  balanceAmount: {
+    fontWeight: '800',
+    color: colors.onSurface,
   },
   itemList: {
-    gap: spacing.sm,
+    gap: spacing.md,
+    marginBottom: spacing['2xl'],
   },
   itemRow: {
-    paddingVertical: 2,
+    minHeight: 40,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+    backgroundColor: colors.surface,
+    borderRadius: borderRadius.md,
   },
   itemName: {
     flex: 1,
     marginRight: spacing.md,
+    fontWeight: '500',
+  },
+  itemPrice: {
+    fontWeight: '600',
+    color: colors.onSurface,
   },
   breakdownSection: {
-    marginTop: spacing.lg,
-    paddingTop: spacing.md,
+    paddingTop: spacing.lg,
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.surfaceContainerHigh,
-    gap: spacing.xs,
+    borderTopColor: colors.surfaceContainer,
+    gap: spacing.sm,
   },
   breakdownRow: {
-    paddingVertical: 1,
+    paddingHorizontal: spacing.xs,
+  },
+  breakdownAccent: {
+    fontWeight: '500',
   },
 });

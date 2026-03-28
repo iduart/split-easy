@@ -24,9 +24,9 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
         pressedOpacity={OPACITY_ON_PRESS_SUBTLE}
         style={[styles.chip, styles.addChip]}>
         <Row align="center" gap={spacing.sm}>
-          <Icon name="add" size={18} color={colors.onSurfaceVariant} />
-          <Text variant="labelLg" color={colors.onSurfaceVariant}>
-            Add
+          <Icon name="add" size={16} color={colors.outline} />
+          <Text variant="labelMd" color={colors.outline} style={styles.addLabel}>
+            Add person
           </Text>
         </Row>
       </BasePressable>
@@ -46,14 +46,25 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
         isActive ? styles.activeChip : styles.inactiveChip,
       ]}>
       <Row align="center" gap={spacing.sm}>
-        <Avatar
-          initial={participant.initial}
-          size={28}
-          colorKey={participant.colorKey}
-        />
+        {isActive ? (
+          <View style={styles.activeAvatar}>
+            <Text style={styles.activeAvatarInitial}>
+              {participant.initial.toUpperCase()}
+            </Text>
+          </View>
+        ) : (
+          <Avatar
+            initial={participant.initial}
+            size={24}
+            colorKey={participant.colorKey}
+          />
+        )}
         <Text
-          variant="labelLg"
-          color={isActive ? colors.onPrimary : colors.onSurface}>
+          variant="labelMd"
+          color={
+            isActive ? colors.onPrimary : colors.onSurfaceVariant
+          }
+          style={styles.participantName}>
           {participant.name}
         </Text>
       </Row>
@@ -61,13 +72,14 @@ export const ParticipantChip: React.FC<ParticipantChipProps> = ({
   );
 };
 
+const AVATAR = 24;
+
 const styles = StyleSheet.create({
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingLeft: spacing.xs,
-    paddingRight: spacing.lg,
-    paddingVertical: spacing.xs,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
     borderRadius: borderRadius.full,
   },
   activeChip: {
@@ -76,13 +88,31 @@ const styles = StyleSheet.create({
   inactiveChip: {
     backgroundColor: colors.surfaceContainerLowest,
   },
+  activeAvatar: {
+    width: AVATAR,
+    height: AVATAR,
+    borderRadius: AVATAR / 2,
+    backgroundColor: 'rgba(244, 241, 255, 0.2)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  activeAvatarInitial: {
+    fontSize: 10,
+    fontWeight: '700',
+    color: colors.onPrimary,
+  },
+  participantName: {
+    fontWeight: '600',
+  },
   addChip: {
     backgroundColor: colors.transparent,
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderStyle: 'dashed',
     borderColor: colors.outlineVariant,
-    paddingLeft: spacing.md,
-    paddingRight: spacing.lg,
+    paddingHorizontal: spacing.lg,
     paddingVertical: spacing.sm,
+  },
+  addLabel: {
+    fontWeight: '600',
   },
 });

@@ -7,6 +7,7 @@ import {
   Platform,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import {colors, spacing, borderRadius, shadows, OPACITY_ON_PRESS_ICON} from '../theme';
 import {
@@ -20,11 +21,9 @@ import {
   BasePressable,
 } from '../components/primitives';
 import {
-  Header,
   BillItemRow,
   ParticipantChip,
   FilterChips,
-  GlassFooter,
 } from '../components/shared';
 import {useAppDispatch, useAppSelector} from '../app/store';
 import {setActiveBill} from '../features/bills/billsSlice';
@@ -36,6 +35,7 @@ const FILTERS = ['All', 'Unclaimed', 'Claimed', 'Shared', 'Mine'];
 
 export const ClaimItemsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   const dispatch = useAppDispatch();
   const activeBill = useAppSelector(state => state.bills.activeBill);
   const claimFilter = useAppSelector(state => state.ui.claimFilter);
@@ -85,32 +85,44 @@ export const ClaimItemsScreen: React.FC = () => {
   );
 
   return (
-    <Screen style={styles.screen} edges={['top']}>
-      {/* Custom Header */}
-      <View style={styles.header}>
-        <Row align="center" gap={spacing.sm}>
-          <BasePressable
-            onPress={() => navigation.goBack()}
-            pressedOpacity={OPACITY_ON_PRESS_ICON}
-            style={styles.backBtn}>
-            <Icon name="arrow-back" size={24} color={colors.primary} />
-          </BasePressable>
-          <View style={styles.headerTitleSection}>
-            <Text variant="titleMd" numberOfLines={1}>
-              {bill.restaurantName}
+    <Screen style={styles.screen} edges={['bottom']}>
+      {/* White header sheet: fills status bar so top is not gray; right column stays visible */}
+      <View
+        style={[
+          styles.headerSheet,
+          {paddingTop: insets.top},
+        ]}>
+        <View style={styles.header}>
+          <View style={styles.headerLeft}>
+            <Row align="center" gap={spacing.sm}>
+              <BasePressable
+                onPress={() => navigation.goBack()}
+                pressedOpacity={OPACITY_ON_PRESS_ICON}
+                style={styles.backBtn}>
+                <Icon name="arrow-back" size={24} color={colors.primary} />
+              </BasePressable>
+              <View style={styles.headerTitleSection}>
+                <Text variant="titleMd" numberOfLines={1}>
+                  {bill.restaurantName}
+                </Text>
+                <Text variant="labelSm" color={colors.onSurfaceVariant}>
+                  Step {bill.step} of {bill.totalSteps}
+                </Text>
+              </View>
+            </Row>
+          </View>
+          <View style={styles.headerRight}>
+            <Text
+              variant="titleMd"
+              color={colors.primary}
+              style={styles.headerTotal}
+              numberOfLines={1}>
+              ${bill.totalAmount.toFixed(2)}
             </Text>
-            <Text variant="bodySm" color={colors.onSurfaceVariant}>
-              Step {bill.step} of {bill.totalSteps}
+            <Text variant="caption" color={colors.onSurfaceVariant} numberOfLines={1}>
+              {bill.items.length} items
             </Text>
           </View>
-        </Row>
-        <View style={styles.headerRight}>
-          <Text variant="titleSm" color={colors.primary}>
-            ${bill.totalAmount.toFixed(2)}
-          </Text>
-          <Text variant="caption" color={colors.onSurfaceVariant}>
-            {bill.items.length} items
-          </Text>
         </View>
       </View>
 
@@ -118,6 +130,7 @@ export const ClaimItemsScreen: React.FC = () => {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        style={styles.horizontalStrip}
         contentContainerStyle={styles.participantScroll}>
         {mockParticipants.map(p => (
           <ParticipantChip
@@ -129,8 +142,6 @@ export const ClaimItemsScreen: React.FC = () => {
         ))}
         <ParticipantChip isAddButton onPress={() => {}} />
       </ScrollView>
-
-      <Spacer size="sm" />
 
       {/* Filter Chips */}
       <FilterChips
@@ -282,13 +293,24 @@ const styles = StyleSheet.create({
   screen: {
     backgroundColor: colors.surface,
   },
+  headerSheet: {
+    backgroundColor: colors.surfaceContainerLowest,
+    borderTopLeftRadius: borderRadius['2xl'],
+    borderTopRightRadius: borderRadius['2xl'],
+  },
   header: {
-    height: 56,
+    minHeight: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
-    backgroundColor: colors.surface,
+    paddingBottom: spacing.md,
+    backgroundColor: colors.surfaceContainerLowest,
+  },
+  headerLeft: {
+    flex: 1,
+    minWidth: 0,
+    marginRight: spacing.md,
   },
   backBtn: {
     width: 40,
@@ -299,14 +321,25 @@ const styles = StyleSheet.create({
   },
   headerTitleSection: {
     flex: 1,
+    minWidth: 0,
   },
   headerRight: {
+    flexShrink: 0,
+    flexGrow: 0,
     alignItems: 'flex-end',
   },
+  headerTotal: {
+    fontWeight: '800',
+  },
+  horizontalStrip: {
+    flexGrow: 0,
+  },
   participantScroll: {
+    flexGrow: 0,
+    alignItems: 'center',
     paddingHorizontal: spacing.lg,
-    gap: spacing.sm,
-    paddingVertical: spacing.sm,
+    gap: spacing.md,
+    paddingVertical: spacing.md,
   },
   list: {
     flex: 1,

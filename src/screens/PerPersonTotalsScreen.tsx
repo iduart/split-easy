@@ -1,6 +1,7 @@
 import React from 'react';
 import {View, ScrollView, StyleSheet, Platform} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import LinearGradient from 'react-native-linear-gradient';
 import {
   colors,
@@ -17,8 +18,14 @@ import {
   Row,
   BasePressable,
 } from '../components/primitives';
-import {Header, ParticipantCard, GlassFooter} from '../components/shared';
+import {ParticipantCard} from '../components/shared';
 import {mockActiveBillCOP, mockParticipants} from '../data/mock';
+
+const formatCOP = (amount: number): string =>
+  `$${Math.round(amount).toLocaleString('es-CO', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  })}`;
 
 const getParticipantItems = (participantId: string) => {
   return mockActiveBillCOP.items.filter(item =>
@@ -46,56 +53,65 @@ const getParticipantTotals = (participantId: string) => {
 
 export const PerPersonTotalsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
 
   const handleConfirm = () => {
     (navigation as any).navigate('MainTabs');
   };
 
+  const billTotalFormatted = formatCOP(mockActiveBillCOP.totalAmount);
+
   return (
-    <Screen style={styles.screen}>
-      {/* Header */}
+    <Screen style={styles.screen} edges={['top']}>
       <View style={styles.header}>
-        <Row align="center" gap={spacing.sm}>
-          <BasePressable
-            onPress={() => navigation.goBack()}
-            pressedOpacity={OPACITY_ON_PRESS_ICON}
-            style={styles.backBtn}>
-            <Icon name="arrow-back" size={24} color={colors.primary} />
-          </BasePressable>
-          <Text variant="titleMd">Individual Totals</Text>
-        </Row>
-        <Text variant="titleLg" color={colors.primary} style={styles.brandText}>
+        <View style={styles.headerLeft}>
+          <Row align="center" gap={spacing.md}>
+            <BasePressable
+              onPress={() => navigation.goBack()}
+              pressedOpacity={OPACITY_ON_PRESS_ICON}
+              style={styles.backBtn}>
+              <Icon name="arrow-back" size={24} color={colors.primary} />
+            </BasePressable>
+            <Text variant="headlineMd" numberOfLines={1} style={styles.headerTitle}>
+              Individual Totals
+            </Text>
+          </Row>
+        </View>
+        <Text
+          variant="titleLg"
+          color={colors.primary}
+          numberOfLines={1}
+          style={styles.brandText}>
           SplitEasy
         </Text>
       </View>
 
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {paddingBottom: spacing['3xl'] + insets.bottom + 120},
+        ]}
         showsVerticalScrollIndicator={false}>
         <Spacer size="2xl" />
 
-        {/* Total Bill Hero */}
         <View style={styles.heroSection}>
-          <Row align="baseline" justify="center">
-            <Text variant="headlineLg" color={colors.onSurface} style={styles.dollarSign}>
+          <Text variant="bodySm" color={colors.onSurfaceVariant} style={styles.heroLabel}>
+            Total Bill
+          </Text>
+          <Row align="baseline" style={styles.heroAmountRow} gap={spacing.sm}>
+            <Text variant="headlineSm" color={colors.onSurfaceVariant} style={styles.heroDollar}>
               $
             </Text>
-            <Text variant="displayLg" color={colors.onSurface}>
-              305.000
+            <Text style={styles.heroNumber}>{billTotalFormatted.replace(/^\$/, '')}</Text>
+            <Text variant="titleLg" color={colors.primary} style={styles.heroCurrency}>
+              COP
             </Text>
           </Row>
-          <Text
-            variant="titleMd"
-            color={colors.primary}
-            style={styles.currencyLabel}>
-            COP
-          </Text>
         </View>
 
         <Spacer size="3xl" />
 
-        {/* Participant Cards */}
         {mockParticipants.map(participant => {
           const items = getParticipantItems(participant.id);
           const totals = getParticipantTotals(participant.id);
@@ -110,54 +126,47 @@ export const PerPersonTotalsScreen: React.FC = () => {
                 tip={totals.tip}
                 total={totals.total}
                 currency="COP"
+                taxRate={mockActiveBillCOP.taxRate}
               />
             </View>
           );
         })}
 
-        <Spacer size="lg" />
-
-        {/* Empty State Card */}
         <View style={styles.emptyCard}>
-          <Icon name="person-off" size={32} color={colors.onSurfaceVariant} />
+          <Icon name="person-off" size={40} color={colors.outline} />
           <Spacer size="md" />
-          <Text variant="titleSm" color={colors.onSurfaceVariant}>
+          <Text variant="titleSm" color={colors.onSurface} style={styles.emptyTitle}>
             No items claimed
           </Text>
           <Spacer size="xs" />
-          <Text variant="bodySm" color={colors.onSurfaceVariant}>
-            Someone missing?
+          <Text variant="bodySm" color={colors.onSurfaceVariant} style={styles.emptySubtitle}>
+            Someone missing? Go back to Claim Items.
           </Text>
         </View>
-
-        <Spacer size="8xl" />
       </ScrollView>
 
-      {/* Glass Footer */}
-      <View style={styles.glassFooter}>
+      <View
+        style={[
+          styles.glassFooter,
+          {paddingBottom: Math.max(insets.bottom, spacing.lg) + spacing.md},
+        ]}>
         <BasePressable onPress={handleConfirm}>
           <LinearGradient
             colors={[colors.primary, colors.primaryDim]}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
             style={styles.confirmBtn}>
-            <Row align="center" gap={spacing.sm}>
-              <Icon name="check-circle" size={20} color={colors.onPrimary} />
+            <Row align="center" justify="center" gap={spacing.sm}>
               <Text
                 variant="labelLg"
                 color={colors.onPrimary}
                 style={styles.confirmLabel}>
                 Confirm Totals
               </Text>
+              <Icon name="check-circle" size={22} color={colors.onPrimary} />
             </Row>
           </LinearGradient>
         </BasePressable>
-        <Text
-          variant="bodySm"
-          color={colors.onSurfaceVariant}
-          style={styles.confirmSubtitle}>
-          Secure Finalization
-        </Text>
       </View>
     </Screen>
   );
@@ -168,12 +177,23 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
   },
   header: {
-    height: 56,
+    minHeight: 56,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
     backgroundColor: colors.surface,
+  },
+  headerLeft: {
+    flex: 1,
+    minWidth: 0,
+    marginRight: spacing.md,
+  },
+  headerTitle: {
+    fontWeight: '700',
+    flex: 1,
+    minWidth: 0,
   },
   backBtn: {
     width: 40,
@@ -184,6 +204,7 @@ const styles = StyleSheet.create({
   },
   brandText: {
     fontWeight: '800',
+    flexShrink: 0,
   },
   scrollView: {
     flex: 1,
@@ -192,28 +213,47 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
   },
   heroSection: {
-    alignItems: 'center',
+    alignSelf: 'stretch',
   },
-  dollarSign: {
+  heroLabel: {
+    fontWeight: '500',
+    marginBottom: spacing.xs,
+  },
+  heroAmountRow: {
+    flexWrap: 'wrap',
+  },
+  heroDollar: {
     fontWeight: '300',
-    marginRight: spacing.xs,
   },
-  currencyLabel: {
-    textAlign: 'center',
+  heroNumber: {
+    fontSize: 56,
     fontWeight: '800',
-    marginTop: spacing.xs,
+    letterSpacing: -1,
+    lineHeight: 60,
+    color: colors.onSurface,
+  },
+  heroCurrency: {
+    fontWeight: '700',
   },
   cardWrapper: {
-    marginBottom: spacing.lg,
+    marginBottom: spacing['2xl'],
   },
   emptyCard: {
-    borderWidth: 1.5,
+    backgroundColor: colors.surfaceContainerLow,
+    borderWidth: 2,
     borderStyle: 'dashed',
-    borderColor: colors.outlineVariant,
+    borderColor: 'rgba(171, 173, 174, 0.3)',
     borderRadius: borderRadius.xl,
-    padding: spacing['2xl'],
+    padding: spacing['3xl'],
     alignItems: 'center',
     justifyContent: 'center',
+    opacity: 0.85,
+  },
+  emptyTitle: {
+    fontWeight: '600',
+  },
+  emptySubtitle: {
+    textAlign: 'center',
   },
   glassFooter: {
     backgroundColor:
@@ -224,7 +264,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: borderRadius['2xl'],
     paddingHorizontal: spacing.lg,
     paddingTop: spacing.lg,
-    paddingBottom: spacing['3xl'],
     ...shadows.glass,
   },
   confirmBtn: {
@@ -239,7 +278,11 @@ const styles = StyleSheet.create({
   },
   confirmSubtitle: {
     textAlign: 'center',
-    marginTop: spacing.sm,
+    marginTop: spacing.lg,
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: 2,
+    fontSize: 10,
   },
 });
 

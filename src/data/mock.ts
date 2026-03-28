@@ -1,0 +1,212 @@
+import {ActiveBill, BillSummary, Participant, User} from '../types';
+
+export const mockUser: User = {
+  id: 'user-1',
+  name: 'Jordan',
+  email: 'jordan@example.com',
+};
+
+export const mockParticipants: Participant[] = [
+  {id: 'user-1', name: 'Me', initial: 'M', colorKey: 'indigo'},
+  {id: 'user-2', name: 'Ana', initial: 'A', colorKey: 'blue'},
+  {id: 'user-3', name: 'Juan', initial: 'J', colorKey: 'green'},
+];
+
+export const mockRecentBills: BillSummary[] = [
+  {
+    id: 'bill-1',
+    restaurantName: 'The Wild Fork',
+    totalAmount: 142.5,
+    currency: 'USD',
+    date: 'Yesterday, 8:42 PM',
+    icon: 'restaurant',
+    iconColor: '#6249b2',
+    iconBg: 'rgba(98, 73, 178, 0.1)',
+    status: 'in_progress',
+    participantCount: 3,
+  },
+  {
+    id: 'bill-2',
+    restaurantName: 'Blue Bottle Coffee',
+    totalAmount: 24.8,
+    currency: 'USD',
+    date: 'Sep 12, 9:15 AM',
+    icon: 'local-cafe',
+    iconColor: '#4a40e0',
+    iconBg: 'rgba(74, 64, 224, 0.1)',
+    status: 'completed',
+    participantCount: 2,
+  },
+  {
+    id: 'bill-3',
+    restaurantName: 'Neon Disco Lounge',
+    totalAmount: 310.0,
+    currency: 'USD',
+    date: 'Sep 10, 11:30 PM',
+    icon: 'nightlife',
+    iconColor: '#983772',
+    iconBg: 'rgba(152, 55, 114, 0.1)',
+    status: 'completed',
+    participantCount: 5,
+  },
+];
+
+export const mockActiveBill: ActiveBill = {
+  id: 'bill-1',
+  restaurantName: 'The Wild Fork',
+  totalAmount: 142.5,
+  currency: 'USD',
+  items: [
+    {
+      id: 'item-1',
+      name: 'Burger',
+      quantity: 1,
+      unitPrice: 12.0,
+      totalPrice: 12.0,
+      claimedBy: ['user-1'],
+      splitType: 'single',
+    },
+    {
+      id: 'item-2',
+      name: 'Fries',
+      quantity: 2,
+      unitPrice: 4.0,
+      totalPrice: 8.0,
+      claimedBy: ['user-2'],
+      splitType: 'shared',
+    },
+    {
+      id: 'item-3',
+      name: 'Coke',
+      quantity: 3,
+      unitPrice: 2.0,
+      totalPrice: 6.0,
+      claimedBy: [],
+      splitType: 'unclaimed',
+    },
+    {
+      id: 'item-4',
+      name: 'Caesar Salad',
+      quantity: 1,
+      unitPrice: 9.5,
+      totalPrice: 9.5,
+      claimedBy: ['user-3'],
+      splitType: 'single',
+    },
+    {
+      id: 'item-5',
+      name: 'Pasta Alfredo',
+      quantity: 1,
+      unitPrice: 14.0,
+      totalPrice: 14.0,
+      claimedBy: ['user-1', 'user-2', 'user-3'],
+      splitType: 'shared',
+    },
+    {
+      id: 'item-6',
+      name: 'Cheesecake',
+      quantity: 1,
+      unitPrice: 7.0,
+      totalPrice: 7.0,
+      claimedBy: [],
+      splitType: 'unclaimed',
+    },
+  ],
+  participants: mockParticipants,
+  taxRate: 0.1,
+  tipAmount: 14.25,
+  step: 2,
+  totalSteps: 4,
+};
+
+// COP version for Per-Person Totals screen
+export const mockActiveBillCOP: ActiveBill = {
+  id: 'bill-cop-1',
+  restaurantName: 'The Wild Fork',
+  totalAmount: 305000,
+  currency: 'COP',
+  items: [
+    {
+      id: 'cop-1',
+      name: 'Bacon Cheeseburger',
+      quantity: 1,
+      unitPrice: 52000,
+      totalPrice: 52000,
+      claimedBy: ['user-1'],
+      splitType: 'single',
+    },
+    {
+      id: 'cop-2',
+      name: '1/2 Truffle Fries',
+      quantity: 1,
+      unitPrice: 18000,
+      totalPrice: 18000,
+      claimedBy: ['user-1', 'user-3'],
+      splitType: 'shared',
+    },
+    {
+      id: 'cop-3',
+      name: 'Craft IPA',
+      quantity: 1,
+      unitPrice: 12000,
+      totalPrice: 12000,
+      claimedBy: ['user-1'],
+      splitType: 'single',
+    },
+    {
+      id: 'cop-4',
+      name: 'Caesar Salad',
+      quantity: 1,
+      unitPrice: 38000,
+      totalPrice: 38000,
+      claimedBy: ['user-2'],
+      splitType: 'single',
+    },
+    {
+      id: 'cop-5',
+      name: 'Gin Tonic',
+      quantity: 1,
+      unitPrice: 30000,
+      totalPrice: 30000,
+      claimedBy: ['user-2'],
+      splitType: 'single',
+    },
+    {
+      id: 'cop-6',
+      name: 'Ribeye Steak',
+      quantity: 1,
+      unitPrice: 77000,
+      totalPrice: 77000,
+      claimedBy: ['user-3'],
+      splitType: 'single',
+    },
+  ],
+  participants: mockParticipants,
+  taxRate: 0.1,
+  tipAmount: 35500,
+  step: 4,
+  totalSteps: 4,
+};
+
+export const onboardingPages = [
+  {
+    icon: 'document-scanner',
+    title: 'Scan & Extract',
+    description: 'Scan receipts to instantly pull line items with high-precision AI.',
+  },
+  {
+    icon: 'group-add',
+    title: 'Split with Friends',
+    description: 'Add friends and assign items in seconds.',
+  },
+  {
+    icon: 'monitoring',
+    title: 'Track Totals',
+    description: 'Real-time calculation of taxes, tips, and totals.',
+  },
+  {
+    icon: 'request-quote',
+    title: 'Share & Settle',
+    description: 'Send summaries and get paid easily.',
+  },
+];

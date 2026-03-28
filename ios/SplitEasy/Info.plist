@@ -33,6 +33,10 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>SplitEasy needs camera access to take photos of receipts for bill splitting.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>SplitEasy needs photo library access to select receipt images for bill splitting.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>RCTNewArchEnabled</key>

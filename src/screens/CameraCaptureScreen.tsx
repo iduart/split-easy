@@ -4,8 +4,7 @@ import {useNavigation} from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import {colors, spacing, borderRadius, OPACITY_ON_PRESS_ICON} from '../theme';
 import {Text, Icon, Row, BasePressable} from '../components/primitives';
-import {useAppDispatch} from '../app/store';
-import {setSourceType} from '../features/scan/scanSlice';
+import {useScanBill} from '../hooks/useScanBill';
 
 const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 const CUTOUT_WIDTH = SCREEN_WIDTH - 80;
@@ -13,7 +12,7 @@ const CUTOUT_HEIGHT = SCREEN_HEIGHT * 0.45;
 
 export const CameraCaptureScreen: React.FC = () => {
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
+  const {pickFromCamera} = useScanBill();
   const pulseAnim = useRef(new Animated.Value(0.4)).current;
 
   useEffect(() => {
@@ -36,8 +35,9 @@ export const CameraCaptureScreen: React.FC = () => {
   }, [pulseAnim]);
 
   const handleCapture = () => {
-    dispatch(setSourceType('camera'));
-    (navigation as any).navigate('ProcessingReceipt');
+    pickFromCamera(() => {
+      (navigation as any).navigate('ProcessingReceipt');
+    });
   };
 
   return (

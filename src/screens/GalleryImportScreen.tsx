@@ -11,16 +11,16 @@ import {
 } from '../theme';
 import {Screen, Text, Icon, Spacer, Row, BasePressable} from '../components/primitives';
 import {Header} from '../components/shared';
-import {useAppDispatch} from '../app/store';
-import {setSourceType} from '../features/scan/scanSlice';
+import {useScanBill} from '../hooks/useScanBill';
 
 export const GalleryImportScreen: React.FC = () => {
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
+  const {pickFromGallery} = useScanBill();
 
   const handleConfirm = () => {
-    dispatch(setSourceType('gallery'));
-    (navigation as any).navigate('ProcessingReceipt');
+    pickFromGallery(() => {
+      (navigation as any).navigate('ProcessingReceipt');
+    });
   };
 
   return (

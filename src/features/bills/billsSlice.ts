@@ -24,6 +24,7 @@ const billsSlice = createSlice({
     setRecentBills(state, action: PayloadAction<BillSummary[]>) {
       state.recentBills = action.payload;
     },
+    /** Claim one unit of an item for a participant. Allows duplicates up to item.quantity. */
     claimItem(
       state,
       action: PayloadAction<{ itemId: string; participantId: string }>,
@@ -32,12 +33,21 @@ const billsSlice = createSlice({
       const item = state.activeBill.items.find(
         (i) => i.id === action.payload.itemId,
       );
-      if (item && !item.claimedBy.includes(action.payload.participantId)) {
-        item.claimedBy.push(action.payload.participantId);
-        item.splitType =
-          item.claimedBy.length > 1 ? 'shared' : 'single';
+      if (!item) return;
+      // Don't exceed the item's total quantity
+      if (item.claimedBy.length >= item.quantity) return;
+      item.claimedBy.push(action.payload.participantId);
+      // Derive splitType from unique claimers
+      const unique = new Set(item.claimedBy);
+      if (item.claimedBy.length === 0) {
+        item.splitType = 'unclaimed';
+      } else if (unique.size > 1) {
+        item.splitType = 'shared';
+      } else {
+        item.splitType = 'single';
       }
     },
+    /** Remove one unit claim for a participant. */
     unclaimItem(
       state,
       action: PayloadAction<{ itemId: string; participantId: string }>,
@@ -46,17 +56,18 @@ const billsSlice = createSlice({
       const item = state.activeBill.items.find(
         (i) => i.id === action.payload.itemId,
       );
-      if (item) {
-        item.claimedBy = item.claimedBy.filter(
-          (id) => id !== action.payload.participantId,
-        );
-        if (item.claimedBy.length === 0) {
-          item.splitType = 'unclaimed';
-        } else if (item.claimedBy.length === 1) {
-          item.splitType = 'single';
-        } else {
-          item.splitType = 'shared';
-        }
+      if (!item) return;
+      const idx = item.claimedBy.indexOf(action.payload.participantId);
+      if (idx !== -1) {
+        item.claimedBy.splice(idx, 1);
+      }
+      const unique = new Set(item.claimedBy);
+      if (item.claimedBy.length === 0) {
+        item.splitType = 'unclaimed';
+      } else if (unique.size > 1) {
+        item.splitType = 'shared';
+      } else {
+        item.splitType = 'single';
       }
     },
   },

@@ -4,9 +4,15 @@ import {useNavigation} from '@react-navigation/native';
 import {colors, spacing, borderRadius, shadows} from '../theme';
 import {Screen, Text, Icon, Spacer, Row, BasePressable} from '../components/primitives';
 import {Header, GradientFill} from '../components/shared';
+import {useScanBill} from '../hooks/useScanBill';
 
 export const ScanOptionsScreen: React.FC = () => {
   const navigation = useNavigation();
+  const {pickFromCamera, pickFromGallery} = useScanBill();
+
+  const navigateToProcessing = () => {
+    (navigation as any).navigate('ProcessingReceipt');
+  };
 
   return (
     <Screen style={styles.screen}>
@@ -80,7 +86,7 @@ export const ScanOptionsScreen: React.FC = () => {
 
         {/* Take Photo Button — content in a normal View; gradient is behind via GradientFill (avoids RN LinearGradient flex clipping) */}
         <BasePressable
-          onPress={() => (navigation as any).navigate('CameraCapture')}
+          onPress={() => pickFromCamera(navigateToProcessing)}
           style={styles.actionRow}>
           <GradientFill
             colors={[colors.primary, colors.primaryDim]}
@@ -116,7 +122,7 @@ export const ScanOptionsScreen: React.FC = () => {
 
         {/* Upload from Gallery Button */}
         <BasePressable
-          onPress={() => (navigation as any).navigate('GalleryImport')}
+          onPress={() => pickFromGallery(navigateToProcessing)}
           style={styles.actionRowDefault}>
           <View style={styles.actionButtonInner}>
             <View style={styles.actionButtonLeft}>
